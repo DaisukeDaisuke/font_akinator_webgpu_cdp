@@ -1,0 +1,16 @@
+url = 'https://daisukedaisuke.github.io/tool/font_akinator_webgpu.html'
+chrome_path = ''
+headless = false
+startup_timeout_ms = 30000
+file_timeout_ms = 60000
+command_timeout_ms = 600000
+profile_root = '.font-teacher/profiles'
+download_root = '.font-teacher/downloads'
+
+[configs.pixel12]
+ttf_path = 'C:\path\to\font12.ttf'
+json_path = 'C:\path\to\font_12x12_codepoints.json'
+
+[configs.pixel16]
+ttf_path = 'C:\path\to\font16.ttf'
+json_path = 'C:\path\to\font_16x16_codepoints.json'

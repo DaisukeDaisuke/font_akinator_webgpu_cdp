@@ -1,0 +1,14 @@
+{
+  "name": "font-teacher-cdp-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": "./src/index.js",
+  "scripts": {
+    "mcp": "node src/mcpMain.js",
+    "test": "node --test tests/*.test.js"
+  }
+}
