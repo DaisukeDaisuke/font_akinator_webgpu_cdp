@@ -61,6 +61,13 @@ export class TeacherHarness {
     return this.session;
   }
 
+  async #closeSession() {
+    const session = this.session;
+    this.session = null;
+    this.sessionKey = null;
+    await session?.close();
+  }
+
   async generate({ config: configName, source_png: sourcePng, char_count: charCount, output_path: outputPath }) {
     if (this.generateActive) throw new Error("generate_teacher_png is already running");
     this.generateActive = true;
@@ -90,17 +97,21 @@ export class TeacherHarness {
         ok: true,
         path: saved.path,
         bytes: saved.bytes,
+        recognized_text: metrics.recognized_text,
+        overall_match_percent: metrics.overall_match_percent,
         image: metrics.image,
         per_character: metrics.per_character
       };
     } finally {
-      this.generateActive = false;
+      try {
+        await this.#closeSession();
+      } finally {
+        this.generateActive = false;
+      }
     }
   }
 
   async close() {
-    await this.session?.close();
-    this.session = null;
-    this.sessionKey = null;
+    await this.#closeSession();
   }
 }

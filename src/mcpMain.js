@@ -22,7 +22,7 @@ export const TOOLS = Object.freeze([
   },
   {
     name: "generate_teacher_png",
-    description: "Run the configured WebGPU font matcher for a source PNG, download the generated teacher PNG through Chrome, and move it to output_path without overwriting an existing file. Returns match metrics only; recognized characters and character metadata are omitted.",
+    description: "Run the configured WebGPU font matcher for a source PNG, download the generated teacher PNG through Chrome, and move it to output_path without overwriting an existing file. Returns recognized_text, overall_match_percent, and per_character entries with each recognized character and its match_percent; internal character metadata is omitted. The Chrome session is closed after each generation.",
     inputSchema: objectSchema({
       config: { type: "string", minLength: 1, description: "Config name returned by list_config." },
       source_png: { type: "string", minLength: 1, description: "Source PNG path. Normalized internally." },
@@ -74,7 +74,7 @@ export class McpServer {
         protocolVersion: SUPPORTED_PROTOCOLS.has(requested) ? requested : "2025-11-25",
         capabilities: { tools: { listChanged: false } },
         serverInfo: { name: SERVER_NAME, title: "Font Teacher CDP MCP", version: SERVER_VERSION },
-        instructions: "Use list_config to choose a TOML-defined TTF/JSON profile. generate_teacher_png accepts only the profile name, source PNG, character count, and destination PNG. Generated character identities and metadata are not returned."
+        instructions: "Use list_config to choose a TOML-defined TTF/JSON profile. generate_teacher_png accepts only the profile name, source PNG, character count, and destination PNG. The result returns recognized_text, overall_match_percent, and per_character entries containing each recognized character and its match_percent; internal character metadata is not returned. Chrome is closed after each generation."
       });
     }
     if (message.method === "ping") return response(id, {});

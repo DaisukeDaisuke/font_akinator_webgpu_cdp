@@ -20,7 +20,7 @@ test("list_config returns config name with TTF and JSON filenames", async () => 
   assert.deepEqual(reply.result.structuredContent, { configs: [{ name: "pixel12", ttf_file: "font12.ttf", json_file: "font12.json" }] });
 });
 
-test("generate response does not contain recognized characters or character metadata", async () => {
+test("generate response contains recognized characters but omits internal character metadata", async () => {
   const fake = {
     async generate(args) {
       assert.deepEqual(args, { config: "pixel12", source_png: "in.png", char_count: 2, output_path: "out.png" });
@@ -28,10 +28,12 @@ test("generate response does not contain recognized characters or character meta
         ok: true,
         path: "out.png",
         bytes: 123,
+        recognized_text: "AB",
+        overall_match_percent: 99.5,
         image: { match_percent: 99.5, diff_pixels: 2 },
         per_character: [
-          { index: 1, match_percent: 99.0, diff_pixels: 1 },
-          { index: 2, match_percent: 98.0, diff_pixels: 3 }
+          { index: 1, character: "A", match_percent: 99.0, diff_pixels: 1 },
+          { index: 2, character: "B", match_percent: 98.0, diff_pixels: 3 }
         ]
       };
     },
@@ -48,10 +50,12 @@ test("generate response does not contain recognized characters or character meta
     ok: true,
     path: "out.png",
     bytes: 123,
+    recognized_text: "AB",
+    overall_match_percent: 99.5,
     image: { match_percent: 99.5, diff_pixels: 2 },
     per_character: [
-      { index: 1, match_percent: 99.0, diff_pixels: 1 },
-      { index: 2, match_percent: 98.0, diff_pixels: 3 }
+      { index: 1, character: "A", match_percent: 99.0, diff_pixels: 1 },
+      { index: 2, character: "B", match_percent: 98.0, diff_pixels: 3 }
     ]
   });
 });

@@ -224,6 +224,7 @@ export class ChromeSession {
     );
     return await this.callGlobal(`function(){
       const results=globalThis.matcher.results();
+      const recognized=results.map((r)=>String(r.char??''));
       const canvas=document.querySelector('#outputDiffCanvas');
       if(!canvas) throw new Error('outputDiffCanvas is missing');
       const image=canvas.getContext('2d',{willReadFrequently:true}).getImageData(0,0,canvas.width,canvas.height).data;
@@ -237,9 +238,12 @@ export class ChromeSession {
       }
       const total=bothWhite+outputOnly+inputOnly+bothBlack;
       const same=bothWhite+bothBlack;
+      const overallMatchPercent=total?same*100/total:0;
       return {
+        recognized_text:recognized.join(''),
+        overall_match_percent:overallMatchPercent,
         image:{
-          match_percent:total?same*100/total:0,
+          match_percent:overallMatchPercent,
           same_pixels:same,
           diff_pixels:outputOnly+inputOnly,
           total_pixels:total,
@@ -248,6 +252,7 @@ export class ChromeSession {
         },
         per_character:results.map((r,index)=>({
           index:index+1,
+          character:recognized[index],
           match_percent:Number(r.percent),
           diff_pixels:Number(r.diff)
         }))
